@@ -24,6 +24,12 @@ public class Ui_EndGame : UiBase
     public override void ShowUi()
     {
         transform.DOScale(1, 0);
+        StartCoroutine(OpenPanel());
+    }
+
+    private IEnumerator OpenPanel()
+    {
+        yield return new WaitForSeconds(1);
         if (GameManager.I.didPlayerWon)
         {
             winPanel.SetActive(true);

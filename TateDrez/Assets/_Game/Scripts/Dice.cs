@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,29 +12,36 @@ public class Dice : MonoBehaviour
     [SerializeField] private LayerMask hitLm;
     private Vector3 startPosition;
 
-    [Header("Force Values")]
-    [SerializeField] private float rollForce;
+    [Header("Force Values")] [SerializeField]
+    private float rollForce;
+
     [SerializeField] private float torqueForce;
-    
+
     [HideInInspector] public int diceResult;
 
     private void Awake()
     {
         startPosition = transform.position;
     }
-    
+
 
     public void SetupThis()
     {
         rb.isKinematic = true;
-        transform.position = startPosition;
-        transform.localEulerAngles =
-            new Vector3(Random.Range(-180f, 180f), Random.Range(-180f,180f), Random.Range(-180f, 180f));
+
+        transform.DOMove(startPosition, 0.5f).OnComplete((() =>
+        {
+            DiceManager.I.uiDice.rollButtonGo.SetActive(true);
+        }));
+
+        var randomRotation =
+            new Vector3(Random.Range(-180f, 180f), Random.Range(-180f, 180f), Random.Range(-180f, 180f));
+        transform.DORotate(randomRotation, 0.25f);
     }
 
     public IEnumerator RollOpponentDice()
     {
-        yield return new WaitForSeconds(Random.Range(.5f,1f));
+        yield return new WaitForSeconds(Random.Range(.5f, 1f));
         RollTheDice();
     }
 
@@ -70,8 +78,7 @@ public class Dice : MonoBehaviour
             DiceManager.I.WhoWillStart();
         }
     }
-    
-    
+
 
     private int GetDiceResult()
     {
@@ -82,12 +89,12 @@ public class Dice : MonoBehaviour
 
         Vector3[] diceDirections =
         {
-            -forward,   //1
-            right,      //2   
-            -up,        //3    
-            up,        //4  
-            -right,     //5
-            forward,    //6
+            -forward, //1
+            right, //2   
+            -up, //3    
+            up, //4  
+            -right, //5
+            forward, //6
         };
 
         for (int i = 0; i < diceDirections.Length; i++)

@@ -9,7 +9,7 @@ public class DiceManager : MonoBehaviour
     [SerializeField] private Dice playerDice;
     [SerializeField] private Dice opponentDice;
     [SerializeField] private Ui_Place uiPlace;
-    [SerializeField] private Ui_Dice uiDice;
+    public Ui_Dice uiDice;
     private void Awake()
     {
         I = this;
@@ -96,7 +96,6 @@ public class DiceManager : MonoBehaviour
     private void RestartDicePhase()
     {
         SetUpDices();
-        uiDice.rollButtonGo.SetActive(true);
     }
 
     

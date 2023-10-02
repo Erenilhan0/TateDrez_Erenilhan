@@ -17,7 +17,6 @@ public class Ui_Dice : UiBase
     public override void ShowUi()
     {
         transform.DOScale(1, 0);
-        rollButtonGo.SetActive(true);
     }
 
    

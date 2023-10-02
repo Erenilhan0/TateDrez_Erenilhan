@@ -86,13 +86,13 @@ public class Opponent : MonoBehaviour
     {
         CalculateAllPossibleMoves();
         
-        if (availableMoves.Count == 0)
+        if (availableMoves.Count != 0)
         {
-            GameManager.I.OpenDynamicMode(true, teamColor);
+            StartCoroutine(MakeMove(ChooseMove()));
         }
         else
         {
-            StartCoroutine(MakeMove(ChooseMove()));
+            GameManager.I.EndTheTurn(teamColor);
         }
 
     }

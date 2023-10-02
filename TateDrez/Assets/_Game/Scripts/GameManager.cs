@@ -76,18 +76,7 @@ public class GameManager : MonoBehaviour
     {
         activeTeam = teamToActive;
     }
-
-    public void OpenDynamicMode(bool openTheMode, TeamColor team)
-    {
-        if (!BoardManager.I.IsBoardPlayable()) return;
-        dynamicMode = openTheMode;
-        uiGame.DynamicMode(dynamicMode);
-
-        if (openTheMode)
-        {
-            EndTheTurn(team);
-        }
-    }
+    
 
 
     public void EndTheTurn(TeamColor previousTeam)
@@ -124,21 +113,22 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                dynamicMode = !BoardManager.I.IsBoardPlayable();
+                uiGame.DynamicMode(dynamicMode);
+                
                 if (!dynamicMode)
                 {
                     ChangeActiveTeam(previousTeam == TeamColor.White ? TeamColor.Black : TeamColor.White);
 
-                    UiManager.I.uis[2].SetActivePlayerText(activeTeam);
                 }
+
+                UiManager.I.uis[2].SetActivePlayerText(activeTeam);
 
                 if (activeTeam == TeamColor.Black)
                 {
                     opponent.OpponentTurn();
                 }
-                else
-                {
-                    player.PlayerTurn();
-                }
+               
             }
         }
     }

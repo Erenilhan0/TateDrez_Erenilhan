@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -23,10 +24,11 @@ public class BoardManager : MonoBehaviour
         new(2, 4, 6),
     };
 
-    private List<BoardPart> _completedGrounds;
+    public List<BoardPart> completedGrounds;
 
     [SerializeField] private Player player;
     [SerializeField] private Opponent opponent;
+
     private void Awake()
     {
         I = this;
@@ -72,9 +74,25 @@ public class BoardManager : MonoBehaviour
     {
         opponent.CalculateAllPossibleMoves();
         player.CalculateAllMoves();
-        if (player.availableMoves.Count == 0 && opponent.availableMoves.Count == 0)
+
+        var playerMoveCount = player.availableMoves.Count;
+        var opponentMoveCount = opponent.availableMoves.Count;
+        if (playerMoveCount == 0 && opponentMoveCount == 0)
         {
             GameManager.I.ChangeGameState(GamePhase.Dice);
+            return false;
+        }
+
+        if (playerMoveCount == 0)
+        {
+            GameManager.I.ChangeActiveTeam(TeamColor.Black);
+            return false;
+        }
+
+        if (opponentMoveCount == 0)
+        {
+            GameManager.I.ChangeActiveTeam(TeamColor.White);
+
             return false;
         }
 
@@ -129,7 +147,7 @@ public class BoardManager : MonoBehaviour
 
     public bool IsGameEnded(TeamColor teamColor)
     {
-        _completedGrounds.Clear();
+        completedGrounds.Clear();
         for (int i = 0; i < winningConditions.Length; i++)
         {
             var firstBoardPart = allBoardParts[winningConditions[i].x];
@@ -145,9 +163,9 @@ public class BoardManager : MonoBehaviour
             if (gameFinished)
             {
                 GameManager.I.didPlayerWon = firstBoardPart.teamOnPart == TeamColor.White;
-                _completedGrounds.Add(firstBoardPart);
-                _completedGrounds.Add(secondBoardPart);
-                _completedGrounds.Add(thirdBoardPart);
+                completedGrounds.Add(firstBoardPart);
+                completedGrounds.Add(secondBoardPart);
+                completedGrounds.Add(thirdBoardPart);
                 StartCoroutine(LevelEnded());
                 return true;
             }
@@ -159,11 +177,12 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator LevelEnded()
     {
-        foreach (var completedGround in _completedGrounds)
+        foreach (var completedGround in completedGrounds)
         {
             completedGround.LevelFinishAnim(true);
             yield return new WaitForSeconds(.25f);
         }
+
         GameManager.I.ChangeGameState(GamePhase.End);
     }
 
@@ -174,7 +193,6 @@ public class BoardManager : MonoBehaviour
             boardPart.isFull = false;
             boardPart.teamOnPart = TeamColor.None;
             boardPart.LevelFinishAnim(false);
-
         }
     }
 }

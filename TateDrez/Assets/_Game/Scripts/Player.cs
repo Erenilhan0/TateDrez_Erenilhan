@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using DG.Tweening.Plugins;
 using UnityEngine;
@@ -130,7 +131,10 @@ public class Player : MonoBehaviour
     public void PlayerTurn()
     {
         CalculateAllMoves();
-        GameManager.I.OpenDynamicMode(availableMoves.Count == 0, teamColor);
+        if (availableMoves.Count() == 0)
+        {
+            GameManager.I.EndTheTurn(teamColor);
+        }
     }
     
     
