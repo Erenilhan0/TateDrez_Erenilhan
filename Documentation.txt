@@ -1,0 +1,20 @@
+﻿I separated the game into phases with the Event System. 
+
+
+There are 4 phases in the game: the dice roll phase to choose who to start, 
+the chess piece placement phase, the game phase, and the level end phase.
+
+
+I changed the Dynamic mode a little bit. As I read in the document you sent, 
+if X player can't move, the other player moves twice but since the game board is not that big 
+and moves are very limited on the board it stucks when the other player has only one available move, 
+the other player goes to the available board part and returns to the starting position. 
+
+
+Instead, if x player can't move, the other player enters the Dynamic mode and stays in the 
+Dynamic mode unless x player can move.
+
+
+Also, the player is not able to place the knight in the center of the board. 
+Because there are no possible moves when the knight is placed in the center and after playing the game for a while 
+it feels like stealing the fun and puzzle sense of the game.
